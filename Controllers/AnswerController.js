@@ -4,7 +4,7 @@ class AnswerController {
   }
 
   getAllAnswers = async (req, res) => {
-    const { questionnaire_id } = req.body
+    const questionnaire_id = req.params.questionnaireId;
     try {
       const allAnswers = await this.studentAnswerModel.findAll(
         {
@@ -20,7 +20,7 @@ class AnswerController {
   };
 
   getOneAnswer = async (req, res) => {
-    const { id } = req.body 
+    const id = req.params.id 
     try {
       const oneAnswer = await this.studentAnswerModel.findAll(
         {
@@ -36,7 +36,7 @@ class AnswerController {
   };
 
   insertOneAnswer = async (req, res) => {
-    const { questionnaire_id } = req.params.id;
+    const questionnaire_id = req.params.questionnaireId;
     const { user_id, answer } =
       req.body;
     try {
@@ -52,9 +52,8 @@ class AnswerController {
   }
 
   editOneAnswer = async (req, res) => {
-    const { id } = req.params.id;
-    const { answer } =
-      req.body;
+    const id = req.params.id;
+    const { answer } = req.body;
     try {
       await this.studentAnswerModel.update(
         {
@@ -75,13 +74,22 @@ class AnswerController {
 
 
   deleteOneAnswer = async (req, res)=>{
-    const { id } = req.params.id;
+    const id = req.params.id;
+    const questionnaire_id = req.params.questionnaireId;
+    console.log(questionnaire_id)
+    console.log(id)
     try {
       await this.studentAnswerModel.destroy({
         where: {
           id: id,
         }
       })
+      const allAnswers = await this.studentAnswerModel.findAll({
+          where: { 
+            questionnaire_id: questionnaire_id
+          }
+        });
+      return res.json(allAnswers);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }

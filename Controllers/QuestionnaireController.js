@@ -94,13 +94,20 @@ class QuestionnaireController {
 
   // put in a line to delete all answers associated with this question
   deleteOneQuestion = async (req, res)=>{
-    const { id } = req.params.id;
+    const id = req.params.id;
+    const test_id = req.params.testid;
     try {
       await this.questionnaireModel.destroy({
         where: {
           id: id,
         }
       })
+      const allQuestions = await this.questionnaireModel.findAll({
+          where: { 
+            test_id: test_id
+          }
+        });
+      return res.json(allQuestions);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }
