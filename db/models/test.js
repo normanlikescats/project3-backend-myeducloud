@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   class Test extends Model {
     static associate(models) {
       this.hasMany(models.questionnaires);
-      this.hasMany(models.score);
+      //this.hasMany(models.score);
     }
   }
   Test.init(

@@ -3,17 +3,26 @@ class ScoreController {
     this.scoreModel = scoreModel;
   }
 
+  testfunc =  async (req, res) =>{
+    try{
+      console.log('run')
+      const result = await this.scoreModel.findByPk(1)
+      console.log(result)
+      return res.json(result);
+    } catch(err){
+      console.log(err)
+    }
+  }
+
   getAllScoresByTest = async (req, res) => {
     const test_id = req.params.testId
-    console.log(test_id)
     try {
-      const allScoresByTest = await this.scoreModel.findAll(
-        {
-          where: { 
-            test_id: test_id
-          }
+      const allScoresByTest = await this.scoreModel.findAll({
+        attributes: ['id', 'user_id', 'test_id', 'student_answer_id', 'score'], 
+        where: { 
+          test_id: test_id
         }
-      );
+      });
       res.json(allScoresByTest);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
@@ -22,15 +31,14 @@ class ScoreController {
 
   getAllScoresByUser = async (req, res) => {
     const user_id = req.params.userId
-    console.log(user_id )
+    console.log(user_id)
     try {
-      const allScoresByUser = await this.scoreModel.findAll(
-        {
+      const allScoresByUser = await this.scoreModel.findAll({
+        attributes: ['id', 'user_id', 'test_id', 'student_answer_id', 'score'],     
           where: { 
             user_id : user_id 
           }
-        }
-      );
+      });
       res.json(allScoresByUser);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
@@ -39,61 +47,53 @@ class ScoreController {
 
   getOneScore = async (req, res) => {
     const test_id = req.params.testId
-    const user_id = req.params.userId 
+    const user_id = req.params.userId
+    console.log(test_id)
+    console.log(user_id)
     try {
       const oneScore = await this.scoreModel.findAll(
-        {
+        { attributes:['id', 'user_id', 'test_id', 'student_answer_id', 'score'], 
           where: {
             test_id: test_id,
             user_id: user_id
           }
         }
       );
-      res.json(oneScore);
+      return res.json(oneScore);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }
   };
 
-  // stopped here
   insertOneScore = async (req, res) => {
     const test_id = req.params.testId;
-    const { question, option_a, option_b, option_c, option_d, option_e } =
+    const user_id = req.params.userId
+    const { score, student_answer_id } =
       req.body;
     try {
-      const newQuestion = await this.questionnaireModel.create({
-        test_id: test_id,
-        question: question,
-        option_a: option_a,
-        option_b: option_b,
-        option_c: option_c,
-        option_d: option_d,
-        option_e: option_e,
+      const newScore = await this.scoreModel.create({
+        test_id: Number(test_id),
+        user_id: Number(user_id),
+        student_answer_id: student_answer_id,
+        score: score,
+      },
+      {
+        fields: ['id','test_id','user_id','student_answer_id','score']
       });
-      return res.json(newQuestion);
+      return res.json(newScore);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }
   }
 
-
-  // should include a line to remove answers if teacher removes options?
-  editOneQuestion = async (req, res) => {
+  editOneScore = async (req, res) => {
     const id  = req.params.id;
-    const test_id = req.params.testid;
-    const { question, option_a, option_b, option_c, option_d, option_e } =
-      req.body;
-    console.log(req.body)
+    const score = req.body.score;
+    console.log(id)
     try {
-      await this.questionnaireModel.update(
+      await this.scoreModel.update(
         {
-          test_id: test_id,
-          question: question,
-          option_a: option_a,
-          option_b: option_b,
-          option_c: option_c,
-          option_d: option_d,
-          option_e: option_e,
+          score: score
         },
         {
           where: {
@@ -101,30 +101,28 @@ class ScoreController {
           },
         }
       );
-      const updatedQuestion = await this.questionnaireModel.findByPk(id);
-      return res.json(updatedQuestion);
+      const updatedScore = await this.scoreModel.findByPk(id);
+      return res.json(updatedScore);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }
   }
 
-
-  // put in a line to delete all answers associated with this question
-  deleteOneQuestion = async (req, res)=>{
+  deleteOneScore = async (req, res)=>{
     const id = req.params.id;
-    const test_id = req.params.testid;
+    const test_id = req.params.testId;
     try {
-      await this.questionnaireModel.destroy({
+      await this.scoreModel.destroy({
         where: {
           id: id,
         }
       })
-      const allQuestions = await this.questionnaireModel.findAll({
+      const allScoresByTest = await this.scoreModel.findAll({
           where: { 
             test_id: test_id
           }
         });
-      return res.json(allQuestions);
+      return res.json(allScoresByTest);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }
