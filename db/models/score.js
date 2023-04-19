@@ -1,7 +1,7 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Student_answer extends Model {
+  class Score extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,10 +9,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.questionnaires);
+      this.belongsTo(models.users);
+      this.belongsTo(models.tests);
     }
   }
-  Student_answer.init(
+  Score.init(
     {
       user_id: {
         type: DataTypes.INTEGER,
@@ -21,21 +22,24 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         }
       },
-      questionnaire_id: {
+      test_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: "questionnaire",
+          model: "test",
           key: "id",
         }
       },
-      answer: DataTypes.TEXT,
-      teacher_comment: DataTypes.TEXT,
-    },
-    {
-      sequelize,
-      modelName: "student_answers",
-      underscored: true,
-    }
-  );
-  return Student_answer;
+      student_answer_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "student_answer",
+          key: "id",
+        }
+      },
+      score: DataTypes.INTEGER
+    }, {
+    sequelize,
+    modelName: 'score',
+  });
+  return Score;
 };
