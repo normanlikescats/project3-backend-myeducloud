@@ -1,6 +1,7 @@
 class AnswerController {
-  constructor(studentAnswerModel) {
+  constructor(studentAnswerModel, scoresModel) {
     this.studentAnswerModel = studentAnswerModel;
+    this.scoresModel = scoresModel;
   }
 
   getAllAnswers = async (req, res) => {
@@ -78,6 +79,15 @@ class AnswerController {
     const questionnaire_id = req.params.questionnaireId;
     console.log(questionnaire_id)
     console.log(id)
+    try{
+      await this.scoresModel.destroy({
+        where: {
+          student_answer_id: id
+      }
+    })
+    }catch(err) {
+      return res.status(400).json({ error: true, msg: err });
+    }
     try {
       await this.studentAnswerModel.destroy({
         where: {

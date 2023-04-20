@@ -38,9 +38,9 @@ const MessageRouter = require("./Routers/MessageRouter");
 const ScoreRouter = require("./Routers/ScoreRouter");
 
 const userController = new UserController(users);
-const questionnaireController = new QuestionnaireController(questionnaires);
-const answerController = new AnswerController(student_answers);
-const testController = new TestController(tests);
+const questionnaireController = new QuestionnaireController(questionnaires, student_answers, scores);
+const answerController = new AnswerController(student_answers, scores);
+const testController = new TestController(tests, questionnaires, student_answers, scores);
 const messageController = new MessageController(messages, chatrooms, users);
 const scoreController = new ScoreController(scores);
 
