@@ -8,9 +8,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      this.belongsTo(models.users);
+      this.belongsTo(models.chatrooms);
     }
   }
+
   Message.init(
     {
       message: DataTypes.STRING,

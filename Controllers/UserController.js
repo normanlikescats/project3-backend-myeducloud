@@ -14,34 +14,14 @@ class UserController {
     }
   };
 
-  getOne = async (req, res) => {
+  getOrCreate = async (req, res) => {
     try {
-      const { userEmail } = req.body;
-      const condition = { where: { email: userEmail } };
-      const profile = await this.model.find(condition);
-
+      const condition = {
+        where: { email: req.body.userEmail },
+      };
+      const newProfile = await this.model.findOrCreate(condition);
+      const profile = await this.model.findAll(condition);
       return res.json(profile);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  createProfile = async (req, res) => {
-    try {
-      const { first_name, last_name, email, password, status, photo_url } =
-        req.body;
-
-      // const condition = { where: { email: email } };
-      // const [user] = await this.model.findOrCreate(condition);
-      const newProfile = await this.model.create({
-        first_name: first_name,
-        last_name: last_name,
-        email: email,
-        password: password,
-        status: status,
-        photo_url: photo_url,
-      });
-      res.json(newProfile);
     } catch (e) {
       console.log(e);
     }
@@ -49,26 +29,20 @@ class UserController {
 
   editProfile = async (req, res) => {
     try {
-      const { first_name, last_name, email, password, status, photo_url } =
-        req.body;
+      const { first_name, last_name, status, photo_url, userEmail } = req.body;
 
-      const { userId } = req.params;
-      const condition = { where: { id: userId } };
+      const condition = { where: { email: userEmail } };
       const updatedProfile = await this.model.update(
         {
           first_name: first_name,
           last_name: last_name,
-          email: email,
-          password: password,
           status: status,
           photo_url: photo_url,
         },
         condition
       );
-      const allStudents = await this.model.findAll({
-        where: { status: false },
-      });
-      res.json(allStudents);
+      const profile = await this.model.findAll(condition);
+      res.json(profile);
     } catch (e) {
       console.log(e);
     }

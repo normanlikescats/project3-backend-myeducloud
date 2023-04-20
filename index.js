@@ -51,7 +51,7 @@ const testRouter = new TestRouter(testController, express).route();
 const messageRouter = new MessageRouter(messageController, express).route();
 const scoreRouter = new ScoreRouter(scoreController, express).route();
 
-app.use("/students", userRouter);
+app.use("/profile", userRouter);
 app.use("/questionnaire", questionnaireRouter);
 app.use("/answers", answerRouter);
 app.use("/test", testRouter)
@@ -122,10 +122,8 @@ io.on("connection", async (socket) => {
   });
 });
 
-
 app.use("/profile", userRouter);
 app.use("/questionnaire", questionnaireRouter);
-
 
 server.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);
