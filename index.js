@@ -20,31 +20,43 @@ const checkJwt = auth({
 });
 
 const db = require("./db/models/index");
-const { users, questionnaires, chatrooms, messages } = db;
+
+const { users, questionnaires, student_answers, chatrooms, messages, tests, scores } = db;
 
 const UserController = require("./Controllers/UserController");
 const QuestionnaireController = require("./Controllers/QuestionnaireController");
+const AnswerController = require("./Controllers/AnswerController");
+const TestController = require("./Controllers/TestController");
 const MessageController = require("./Controllers/MessageController");
+const ScoreController = require("./Controllers/ScoreController");
 
 const UserRouter = require("./Routers/UserRouter");
 const QuestionnaireRouter = require("./Routers/QuestionnaireRouter");
+const AnswerRouter = require("./Routers/AnswerRouter");
+const TestRouter = require("./Routers/TestRouter");
 const MessageRouter = require("./Routers/MessageRouter");
+const ScoreRouter = require("./Routers/ScoreRouter");
 
 const userController = new UserController(users);
-const questionnaireController = new QuestionnaireController(questionnaires);
+const questionnaireController = new QuestionnaireController(questionnaires, student_answers, scores);
+const answerController = new AnswerController(student_answers, scores);
+const testController = new TestController(tests, questionnaires, student_answers, scores);
 const messageController = new MessageController(messages, chatrooms, users);
+const scoreController = new ScoreController(scores);
 
 const userRouter = new UserRouter(userController, express).route();
-const questionnaireRouter = new QuestionnaireRouter(
-  questionnaireController,
-  express
-).route();
-
+const questionnaireRouter = new QuestionnaireRouter(questionnaireController, express).route();
+const answerRouter = new AnswerRouter(answerController, express).route();
+const testRouter = new TestRouter(testController, express).route();
 const messageRouter = new MessageRouter(messageController, express).route();
+const scoreRouter = new ScoreRouter(scoreController, express).route();
 
 app.use("/profile", userRouter);
 app.use("/questionnaire", questionnaireRouter);
+app.use("/answers", answerRouter);
+app.use("/test", testRouter)
 app.use("/messages", messageRouter);
+app.use("/score", scoreRouter);
 
 // Socket IO implementation
 const server = http.createServer(app);

@@ -1,6 +1,8 @@
 class QuestionnaireController {
-  constructor(questionnaireModel) {
+  constructor(questionnaireModel, answersModel, scoresModel) {
     this.questionnaireModel = questionnaireModel;
+    this.answersModel = answersModel;
+    this.scoresModel = scoresModel;
   }
 
   getAllQuestions = async (req, res) => {
@@ -91,17 +93,65 @@ class QuestionnaireController {
     }
   }
 
-
-  // put in a line to delete all answers associated with this question
   deleteOneQuestion = async (req, res)=>{
-    const { id } = req.params.id;
-    try {
+    const id = req.params.id;
+    const test_id = req.params.testid;
+    let answerIdArr;
+    //have to pull the ids to delete them....
+    //delete scores first
+    try{
+      const answerId = await this.answersModel.findAll({
+        attributes: ['id'],
+        where:{
+          questionnaire_id: id
+        }
+      })
+      let stringifiedAnswerId = JSON.stringify(answerId)
+      let parsedAnswerId = JSON.parse(stringifiedAnswerId)
+      answerIdArr = parsedAnswerId.map(id => id.id)
+    } catch(err) {
+      return res.status(400).json({ error: true, msg: err });
+    }
+    /*try{
+      const scoreRes = await this.scoresModel.findAll({
+        where:{
+          student_answer_id: answerIdArr
+        }
+      })
+      console.log(JSON.stringify(scoreRes))
+      const answerRes = await this.answersModel.findAll({
+        where:{
+          id: answerIdArr
+        }
+      })
+      console.log(JSON.stringify(answerRes))
+      return res.json(scoreRes)
+    }catch(err) {
+      return res.status(400).json({ error: true, msg: err });
+    }*/
+    try{
+      await this.scoresModel.destroy({
+        where: {
+          student_answer_id: answerIdArr
+        }
+      })
+      await this.answersModel.destroy({
+          where: {
+            id: answerIdArr
+        }
+      })
       await this.questionnaireModel.destroy({
         where: {
           id: id,
         }
       })
-    } catch (err) {
+      const allQuestions = await this.questionnaireModel.findAll({
+          where: { 
+            test_id: test_id
+          }
+      });
+      return res.json(allQuestions);
+    }catch(err) {
       return res.status(400).json({ error: true, msg: err });
     }
   }

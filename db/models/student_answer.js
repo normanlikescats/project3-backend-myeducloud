@@ -9,12 +9,25 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.questionnaires);
     }
   }
   Student_answer.init(
     {
-      user_id: DataTypes.INTEGER,
-      questionnaire_id: DataTypes.INTEGER,
+      user_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "user",
+          key: "id",
+        }
+      },
+      questionnaire_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "questionnaire",
+          key: "id",
+        }
+      },
       answer: DataTypes.TEXT,
       teacher_comment: DataTypes.TEXT,
     },
