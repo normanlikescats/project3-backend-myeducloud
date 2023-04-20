@@ -42,7 +42,7 @@ const questionnaireRouter = new QuestionnaireRouter(
 
 const messageRouter = new MessageRouter(messageController, express).route();
 
-app.use("/students", userRouter);
+app.use("/profile", userRouter);
 app.use("/questionnaire", questionnaireRouter);
 app.use("/messages", messageRouter);
 
@@ -110,10 +110,8 @@ io.on("connection", async (socket) => {
   });
 });
 
-
 app.use("/profile", userRouter);
 app.use("/questionnaire", questionnaireRouter);
-
 
 server.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);
