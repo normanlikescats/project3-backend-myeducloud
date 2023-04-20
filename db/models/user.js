@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
       // define association here
-      //this.hasMany(models.score)
+      this.hasMany(models.scores)
       this.hasMany(models.users_class_subject)
     }
   }

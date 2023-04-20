@@ -3,22 +3,11 @@ class ScoreController {
     this.scoreModel = scoreModel;
   }
 
-  testfunc =  async (req, res) =>{
-    try{
-      console.log('run')
-      const result = await this.scoreModel.findByPk(1)
-      console.log(result)
-      return res.json(result);
-    } catch(err){
-      console.log(err)
-    }
-  }
 
   getAllScoresByTest = async (req, res) => {
     const test_id = req.params.testId
     try {
       const allScoresByTest = await this.scoreModel.findAll({
-        attributes: ['id', 'user_id', 'test_id', 'student_answer_id', 'score'], 
         where: { 
           test_id: test_id
         }
@@ -31,10 +20,8 @@ class ScoreController {
 
   getAllScoresByUser = async (req, res) => {
     const user_id = req.params.userId
-    console.log(user_id)
     try {
       const allScoresByUser = await this.scoreModel.findAll({
-        attributes: ['id', 'user_id', 'test_id', 'student_answer_id', 'score'],     
           where: { 
             user_id : user_id 
           }
@@ -48,11 +35,8 @@ class ScoreController {
   getOneScore = async (req, res) => {
     const test_id = req.params.testId
     const user_id = req.params.userId
-    console.log(test_id)
-    console.log(user_id)
     try {
-      const oneScore = await this.scoreModel.findAll(
-        { attributes:['id', 'user_id', 'test_id', 'student_answer_id', 'score'], 
+      const oneScore = await this.scoreModel.findAll({
           where: {
             test_id: test_id,
             user_id: user_id
@@ -101,7 +85,14 @@ class ScoreController {
           },
         }
       );
-      const updatedScore = await this.scoreModel.findByPk(id);
+      const updatedScore = await this.scoreModel.findAll(
+        { attributes:['id', 'user_id', 'test_id', 'student_answer_id', 'score'], 
+          where: {
+            id: id
+          }
+        }
+      );
+      console.log(updatedScore)
       return res.json(updatedScore);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });

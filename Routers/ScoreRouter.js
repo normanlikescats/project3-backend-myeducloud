@@ -6,7 +6,6 @@ class ScoreRouter {
   route = () => {
     let router = this.express.Router();
     
-    router.get("/", this.scoreController.testfunc)
     router.get("/test/:testId", this.scoreController.getAllScoresByTest);
     router.get("/user/:userId", this.scoreController.getAllScoresByUser);
     router.get("/test/:testId/user/:userId", this.scoreController.getOneScore);

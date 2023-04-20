@@ -3,8 +3,8 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Score extends Model {
     static associate(models) {
-      //this.belongsTo(models.users);
-      //this.belongsTo(models.tests);
+      this.belongsTo(models.users);
+      this.belongsTo(models.tests);
     }
   }
   Score.init(
@@ -34,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     }, {
     sequelize,
     modelName: 'scores',
+    underscored: true
   });
   return Score;
 };
