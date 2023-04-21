@@ -20,40 +20,51 @@ const checkJwt = auth({
 });
 
 const db = require("./db/models/index");
+
 const {
   users,
   questionnaires,
   chatrooms,
   messages,
   class_subjects,
-  users_class_subjects,
+  users_class_subjects, tests, scores
 } = db;
 
 const UserController = require("./Controllers/UserController");
 const QuestionnaireController = require("./Controllers/QuestionnaireController");
+const AnswerController = require("./Controllers/AnswerController");
+const TestController = require("./Controllers/TestController");
 const MessageController = require("./Controllers/MessageController");
 const ClassSubjectController = require("./Controllers/ClassSubjectController");
+const ScoreController = require("./Controllers/ScoreController");
+
 
 const UserRouter = require("./Routers/UserRouter");
 const QuestionnaireRouter = require("./Routers/QuestionnaireRouter");
+const AnswerRouter = require("./Routers/AnswerRouter");
+const TestRouter = require("./Routers/TestRouter");
 const MessageRouter = require("./Routers/MessageRouter");
 const ClassSubjectRouter = require("./Routers/ClassSubjectRouter");
+const ScoreRouter = require("./Routers/ScoreRouter");
+
 
 const userController = new UserController(users);
-const questionnaireController = new QuestionnaireController(questionnaires);
+const questionnaireController = new QuestionnaireController(questionnaires, student_answers, scores);
+const answerController = new AnswerController(student_answers, scores);
+const testController = new TestController(tests, questionnaires, student_answers, scores);
 const messageController = new MessageController(messages, chatrooms, users);
 const classSubjectController = new ClassSubjectController(
   class_subjects,
   users_class_subjects
 );
+const scoreController = new ScoreController(scores);
 
 const userRouter = new UserRouter(userController, express).route();
-const questionnaireRouter = new QuestionnaireRouter(
-  questionnaireController,
-  express
-).route();
-
+const questionnaireRouter = new QuestionnaireRouter(questionnaireController, express).route();
+const answerRouter = new AnswerRouter(answerController, express).route();
+const testRouter = new TestRouter(testController, express).route();
 const messageRouter = new MessageRouter(messageController, express).route();
+const scoreRouter = new ScoreRouter(scoreController, express).route();
 
 const classSubjectRouter = new ClassSubjectRouter(
   classSubjectController,
@@ -62,8 +73,11 @@ const classSubjectRouter = new ClassSubjectRouter(
 
 app.use("/profile", userRouter);
 app.use("/questionnaire", questionnaireRouter);
+app.use("/answers", answerRouter);
+app.use("/test", testRouter)
 app.use("/messages", messageRouter);
 app.use("/class", classSubjectRouter);
+app.use("/score", scoreRouter);
 
 // Socket IO implementation
 const server = http.createServer(app);
