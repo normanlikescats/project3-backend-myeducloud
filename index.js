@@ -20,19 +20,22 @@ const checkJwt = auth({
 });
 
 const db = require("./db/models/index");
-const { users, questionnaires, chatrooms, messages } = db;
+const { users, questionnaires, chatrooms, messages, class_subjects } = db;
 
 const UserController = require("./Controllers/UserController");
 const QuestionnaireController = require("./Controllers/QuestionnaireController");
 const MessageController = require("./Controllers/MessageController");
+const ClassSubjectController = require("./Controllers/ClassSubjectController");
 
 const UserRouter = require("./Routers/UserRouter");
 const QuestionnaireRouter = require("./Routers/QuestionnaireRouter");
 const MessageRouter = require("./Routers/MessageRouter");
+const ClassSubjectRouter = require("./Routers/ClassSubjectRouter");
 
 const userController = new UserController(users);
 const questionnaireController = new QuestionnaireController(questionnaires);
 const messageController = new MessageController(messages, chatrooms, users);
+const classSubjectController = new ClassSubjectController(class_subjects);
 
 const userRouter = new UserRouter(userController, express).route();
 const questionnaireRouter = new QuestionnaireRouter(
@@ -42,9 +45,15 @@ const questionnaireRouter = new QuestionnaireRouter(
 
 const messageRouter = new MessageRouter(messageController, express).route();
 
+const classSubjectRouter = new ClassSubjectRouter(
+  classSubjectController,
+  express
+).route();
+
 app.use("/profile", userRouter);
 app.use("/questionnaire", questionnaireRouter);
 app.use("/messages", messageRouter);
+app.use("/class", classSubjectRouter);
 
 // Socket IO implementation
 const server = http.createServer(app);
