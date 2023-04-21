@@ -9,11 +9,19 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.hasMany(models.student_answers);
+      this.belongsTo(models.tests);
     }
   }
   Questionnaire.init(
     {
-      test_id: DataTypes.INTEGER,
+      test_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "test",
+          key: "id",
+        },
+      },
       question: DataTypes.STRING,
       option_a: DataTypes.STRING,
       option_b: DataTypes.STRING,

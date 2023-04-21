@@ -6,11 +6,11 @@ class AnswerRouter {
   route = () => {
     let router = this.express.Router();
 
-    router.get("/questionnaire/:testid/:id/answers", this.answerController.getAllAnswers);
-    router.get("/questionnaire/:testid/:id/", this.answerController.getOneAnswer);
-    router.post("/questionnaire/:testid/:id", this.answerController.insertOneAnswer);
-    router.put("/questionnaire/:testid/:id/answers/:id", this.answerController.editOneAnswer);
-    router.delete("/questionnaire/:testid/:id/answers/:id", this.answerController.deleteOneAnswer);
+    router.get("/:questionnaireId", this.answerController.getAllAnswers);
+    router.get("/:questionnaireId/:id", this.answerController.getOneAnswer);
+    router.post("/:questionnaireId", this.answerController.insertOneAnswer);
+    router.put("/:questionnaireId/:id", this.answerController.editOneAnswer);
+    router.delete("/:questionnaireId/:id", this.answerController.deleteOneAnswer);
 
     return router;
   };
