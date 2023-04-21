@@ -7,6 +7,7 @@ class ClassSubjectRouter {
     let router = this.express.Router();
 
     router.get("/", this.controller.getAllClassSubjects);
+    router.post("/", this.controller.joinClass);
 
     return router;
   };

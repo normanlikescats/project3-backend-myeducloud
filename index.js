@@ -20,7 +20,14 @@ const checkJwt = auth({
 });
 
 const db = require("./db/models/index");
-const { users, questionnaires, chatrooms, messages, class_subjects } = db;
+const {
+  users,
+  questionnaires,
+  chatrooms,
+  messages,
+  class_subjects,
+  users_class_subjects,
+} = db;
 
 const UserController = require("./Controllers/UserController");
 const QuestionnaireController = require("./Controllers/QuestionnaireController");
@@ -35,7 +42,10 @@ const ClassSubjectRouter = require("./Routers/ClassSubjectRouter");
 const userController = new UserController(users);
 const questionnaireController = new QuestionnaireController(questionnaires);
 const messageController = new MessageController(messages, chatrooms, users);
-const classSubjectController = new ClassSubjectController(class_subjects);
+const classSubjectController = new ClassSubjectController(
+  class_subjects,
+  users_class_subjects
+);
 
 const userRouter = new UserRouter(userController, express).route();
 const questionnaireRouter = new QuestionnaireRouter(
