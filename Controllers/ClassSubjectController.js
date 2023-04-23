@@ -1,7 +1,8 @@
 class ClassSubjectController {
-  constructor(model, userSubject) {
+  constructor(model, classModel, usersModel) {
     this.model = model;
-    this.userSubject = userSubject;
+    this.classModel = classModel;
+    this.usersModel = usersModel;
   }
 
   getAllClassSubjects = async (req, res) => {
@@ -18,16 +19,31 @@ class ClassSubjectController {
     try {
       const { userId, classSubjectId } = req.body;
 
-      const classUpdate = await this.userSubject.findOrCreate({
-        user_id: userId,
-        class_subject_id: classSubjectId,
+      const enrollment = await this.classModel.create({
+        userId: userId,
+        classSubjectId: classSubjectId,
       });
 
-      const usersInTheClass = await this.userSubject.findAll({
-        where: { class_subject_id: classSubjectId },
+      const student = await this.usersModel.findOne({
+        where: userId,
+        include: this.model,
       });
 
-      res.json(usersInTheClass);
+      res.json(student);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  getEnrolledClass = async (req, res) => {
+    try {
+      const { userId } = req.body;
+
+      const enrolled = await this.usersModel.findOne({
+        where: { id: 6 },
+        include: this.model,
+      });
+      res.json(enrolled);
     } catch (e) {
       console.log(e);
     }
