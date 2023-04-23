@@ -24,10 +24,13 @@ const db = require("./db/models/index");
 const {
   users,
   questionnaires,
+  student_answers,
   chatrooms,
-  messages,
   class_subjects,
-  users_class_subjects, tests, scores
+  users_class_subjects,
+  messages,
+  tests,
+  scores,
 } = db;
 
 const UserController = require("./Controllers/UserController");
@@ -38,7 +41,6 @@ const MessageController = require("./Controllers/MessageController");
 const ClassSubjectController = require("./Controllers/ClassSubjectController");
 const ScoreController = require("./Controllers/ScoreController");
 
-
 const UserRouter = require("./Routers/UserRouter");
 const QuestionnaireRouter = require("./Routers/QuestionnaireRouter");
 const AnswerRouter = require("./Routers/AnswerRouter");
@@ -47,20 +49,32 @@ const MessageRouter = require("./Routers/MessageRouter");
 const ClassSubjectRouter = require("./Routers/ClassSubjectRouter");
 const ScoreRouter = require("./Routers/ScoreRouter");
 
-
 const userController = new UserController(users);
-const questionnaireController = new QuestionnaireController(questionnaires, student_answers, scores);
+const questionnaireController = new QuestionnaireController(
+  questionnaires,
+  student_answers,
+  scores
+);
 const answerController = new AnswerController(student_answers, scores);
-const testController = new TestController(tests, questionnaires, student_answers, scores);
+const testController = new TestController(
+  tests,
+  questionnaires,
+  student_answers,
+  scores
+);
 const messageController = new MessageController(messages, chatrooms, users);
 const classSubjectController = new ClassSubjectController(
   class_subjects,
-  users_class_subjects
+  users_class_subjects,
+  users
 );
 const scoreController = new ScoreController(scores);
 
 const userRouter = new UserRouter(userController, express).route();
-const questionnaireRouter = new QuestionnaireRouter(questionnaireController, express).route();
+const questionnaireRouter = new QuestionnaireRouter(
+  questionnaireController,
+  express
+).route();
 const answerRouter = new AnswerRouter(answerController, express).route();
 const testRouter = new TestRouter(testController, express).route();
 const messageRouter = new MessageRouter(messageController, express).route();
@@ -74,7 +88,7 @@ const classSubjectRouter = new ClassSubjectRouter(
 app.use("/profile", userRouter);
 app.use("/questionnaire", questionnaireRouter);
 app.use("/answers", answerRouter);
-app.use("/test", testRouter)
+app.use("/test", testRouter);
 app.use("/messages", messageRouter);
 app.use("/class", classSubjectRouter);
 app.use("/score", scoreRouter);
