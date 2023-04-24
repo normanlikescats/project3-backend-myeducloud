@@ -1,6 +1,7 @@
 class ScoreController {
-  constructor(scoreModel) {
+  constructor(scoreModel, answerModel) {
     this.scoreModel = scoreModel;
+    this.answerModel = answerModel;
   }
 
 
@@ -18,6 +19,30 @@ class ScoreController {
     }
   };
 
+  getAllScoresByQuestion = async (req,res) => {
+    const question_id = req.params.questionId
+    let answerIdArr;
+    try{
+      const allStudentAnswerIds = await this.answerModel.findAll({
+        attributes: ['id'],
+        where: { 
+          questionnaire_id : question_id 
+        }
+      })
+      let stringifiedAnswerId = JSON.stringify(allStudentAnswerIds)
+      let parsedAnswerId = JSON.parse(stringifiedAnswerId)
+      answerIdArr = parsedAnswerId.map(id => id.id)
+      const allScoresByQuestion = await this.scoreModel.findAll({
+        where:{
+          student_answer_id: answerIdArr
+        }
+      })
+      return res.json(allScoresByQuestion);
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: err });
+    }
+  }
+
   getAllScoresByUser = async (req, res) => {
     const user_id = req.params.userId
     try {
@@ -32,38 +57,42 @@ class ScoreController {
     }
   };
 
-  getOneScore = async (req, res) => {
-    const test_id = req.params.testId
+  getOneScore = async (req,res) => {
+    const question_id = req.params.questionId
     const user_id = req.params.userId
-    try {
-      const oneScore = await this.scoreModel.findAll({
-          where: {
-            test_id: test_id,
-            user_id: user_id
-          }
+    try{
+      const studentAnswerId = await this.answerModel.findAll({
+        attributes: ['id'],
+        where: { 
+          questionnaire_id : question_id,
+          user_id: user_id 
         }
-      );
-      return res.json(oneScore);
+      })
+      let stringifiedAnswerId = JSON.stringify(studentAnswerId)
+      let parsedAnswerId = JSON.parse(stringifiedAnswerId)
+      console.log(parsedAnswerId)
+      const allScoresByQuestion = await this.scoreModel.findAll({
+        where:{
+          student_answer_id: parsedAnswerId[0].id
+        }
+      })
+      return res.json(allScoresByQuestion);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }
-  };
+  }
 
   insertOneScore = async (req, res) => {
-    const test_id = req.params.testId;
-    const user_id = req.params.userId
-    const { score, student_answer_id } =
-      req.body;
+    const student_answer_id = req.params.studentAnswerId
+    const { score, test_id, user_id } = req.body;
+    console.log(score)
     try {
       const newScore = await this.scoreModel.create({
-        test_id: Number(test_id),
-        user_id: Number(user_id),
+        test_id: test_id,
+        user_id: user_id,
         student_answer_id: student_answer_id,
         score: score,
-      },
-      {
-        fields: ['id','test_id','user_id','student_answer_id','score']
-      });
+      })
       return res.json(newScore);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
@@ -71,9 +100,8 @@ class ScoreController {
   }
 
   editOneScore = async (req, res) => {
-    const id  = req.params.id;
+    const student_answer_id  = req.params.id;
     const score = req.body.score;
-    console.log(id)
     try {
       await this.scoreModel.update(
         {
@@ -81,18 +109,17 @@ class ScoreController {
         },
         {
           where: {
-            id: id,
+            student_answer_id: student_answer_id,
           },
         }
       );
       const updatedScore = await this.scoreModel.findAll(
         { attributes:['id', 'user_id', 'test_id', 'student_answer_id', 'score'], 
           where: {
-            id: id
+            student_answer_id: student_answer_id
           }
         }
       );
-      console.log(updatedScore)
       return res.json(updatedScore);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
@@ -100,12 +127,12 @@ class ScoreController {
   }
 
   deleteOneScore = async (req, res)=>{
-    const id = req.params.id;
+    const student_answer_id = req.params.id;
     const test_id = req.params.testId;
     try {
       await this.scoreModel.destroy({
         where: {
-          id: id,
+          student_answer_id: student_answer_id,
         }
       })
       const allScoresByTest = await this.scoreModel.findAll({

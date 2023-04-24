@@ -71,7 +71,7 @@ const classSubjectController = new ClassSubjectController(
   users_class_subjects,
   users
 );
-const scoreController = new ScoreController(scores);
+const scoreController = new ScoreController(scores, student_answers);
 const commentController = new CommentController(comments);
 
 const userRouter = new UserRouter(userController, express, checkJwt).route();
