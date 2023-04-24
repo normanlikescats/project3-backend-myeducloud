@@ -9,10 +9,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      users_class_subject_id: {
+      class_subject_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: "users_class_subjects",
+          model: "class_subjects",
           key: "id",
         },
       },

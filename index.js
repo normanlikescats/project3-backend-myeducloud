@@ -63,8 +63,7 @@ io.on("connection", async (socket) => {
     console.log(`User with ID: ${socket.id} joined room: ${data}`);
     // Get all messages on join
     const allMessages = await messages.findAll(
-      { include: users }, // Joins the user table
-      { where: { chatroom_id: data } } // Specifies the specific chatroom ID
+      { include: users, where: { chatroom_id: data } } // Joins the user table
     );
 
     // console.log(allMessages);
@@ -80,7 +79,7 @@ io.on("connection", async (socket) => {
       author: message.user.first_name,
       chatroomIndex: message.chatroom_id,
     }));
-    // console.log(formattedMessages);
+    console.log(formattedMessages);
     // console.log("data", data);
     socket.emit("load_messages", formattedMessages);
   });
