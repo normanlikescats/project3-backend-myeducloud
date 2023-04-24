@@ -3,7 +3,6 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-<<<<<<< HEAD
     await queryInterface.removeColumn(
       "questionnaires",
       "users_class_subject_id",
@@ -20,11 +19,11 @@ module.exports = {
         model: "tests",
         key: "id",
       },
-=======
+    });
+
     await queryInterface.addColumn("users_class_subjects", "created_at", {
       type: Sequelize.DATE,
       allowNull: true,
->>>>>>> main
     });
     await queryInterface.addColumn("users_class_subjects", "updated_at", {
       type: Sequelize.DATE,
@@ -34,7 +33,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-<<<<<<< HEAD
     await queryInterface.addColumn("questionnaires", "users_class_subject_id", {type: Sequelize.INTEGER,
       references: {
         model: "users_class_subjects",
@@ -50,7 +48,6 @@ module.exports = {
     });
     await queryInterface.dropTable("scores");
     await queryInterface.removeColumn("tests", "name", {type: Sequelize.STRING});
-=======
     await queryInterface.removeColumn("users_class_subjects", "created_at", {
       type: Sequelize.DATE,
       allowNull: true,
@@ -59,6 +56,5 @@ module.exports = {
       type: Sequelize.DATE,
       allowNull: true,
     });
->>>>>>> main
   },
 };

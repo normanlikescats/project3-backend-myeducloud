@@ -1,8 +1,13 @@
 "use strict";
 const { Model } = require("sequelize");
+const users_class_subject = require("./users_class_subject");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
+      this.belongsToMany(models.class_subjects, {
+        through: "users_class_subjects",
+      });
+      this.hasMany(models.users_class_subjects, { as: "student" });
       // define association here
       this.hasMany(models.scores)
       this.hasMany(models.users_class_subject)
