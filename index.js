@@ -21,42 +21,83 @@ const checkJwt = auth({
 
 const db = require("./db/models/index");
 
-const { users, questionnaires, student_answers, chatrooms, messages, tests, scores } = db;
+const {
+  users,
+  questionnaires,
+  student_answers,
+  chatrooms,
+  class_subjects,
+  users_class_subjects,
+  messages,
+  tests,
+  scores,
+  comments,
+} = db;
 
 const UserController = require("./Controllers/UserController");
 const QuestionnaireController = require("./Controllers/QuestionnaireController");
 const AnswerController = require("./Controllers/AnswerController");
 const TestController = require("./Controllers/TestController");
 const MessageController = require("./Controllers/MessageController");
+const ClassSubjectController = require("./Controllers/ClassSubjectController");
 const ScoreController = require("./Controllers/ScoreController");
+const CommentController = require("./Controllers/CommentController");
 
 const UserRouter = require("./Routers/UserRouter");
 const QuestionnaireRouter = require("./Routers/QuestionnaireRouter");
 const AnswerRouter = require("./Routers/AnswerRouter");
 const TestRouter = require("./Routers/TestRouter");
 const MessageRouter = require("./Routers/MessageRouter");
+const ClassSubjectRouter = require("./Routers/ClassSubjectRouter");
 const ScoreRouter = require("./Routers/ScoreRouter");
+const CommentRouter = require("./Routers/CommentRouter");
 
 const userController = new UserController(users);
-const questionnaireController = new QuestionnaireController(questionnaires, student_answers, scores);
-const answerController = new AnswerController(student_answers, scores, users);
-const testController = new TestController(tests, questionnaires, student_answers, scores);
+const questionnaireController = new QuestionnaireController(
+  questionnaires,
+  student_answers,
+  scores
+);
+const answerController = new AnswerController(student_answers, scores);
+const testController = new TestController(
+  tests,
+  questionnaires,
+  student_answers,
+  scores
+);
 const messageController = new MessageController(messages, chatrooms, users);
+const classSubjectController = new ClassSubjectController(
+  class_subjects,
+  users_class_subjects,
+  users
+);
 const scoreController = new ScoreController(scores, student_answers);
+const commentController = new CommentController(comments);
 
-const userRouter = new UserRouter(userController, express).route();
-const questionnaireRouter = new QuestionnaireRouter(questionnaireController, express).route();
+const userRouter = new UserRouter(userController, express, checkJwt).route();
+const questionnaireRouter = new QuestionnaireRouter(
+  questionnaireController,
+  express
+).route();
 const answerRouter = new AnswerRouter(answerController, express).route();
 const testRouter = new TestRouter(testController, express).route();
 const messageRouter = new MessageRouter(messageController, express).route();
 const scoreRouter = new ScoreRouter(scoreController, express).route();
+const commentRouter = new CommentRouter(commentController, express).route();
+
+const classSubjectRouter = new ClassSubjectRouter(
+  classSubjectController,
+  express
+).route();
 
 app.use("/profile", userRouter);
 app.use("/questionnaire", questionnaireRouter);
 app.use("/answers", answerRouter);
-app.use("/test", testRouter)
+app.use("/test", testRouter);
 app.use("/messages", messageRouter);
+app.use("/class", classSubjectRouter);
 app.use("/score", scoreRouter);
+app.use("/comment", commentRouter);
 
 // Socket IO implementation
 const server = http.createServer(app);
@@ -75,8 +116,7 @@ io.on("connection", async (socket) => {
     console.log(`User with ID: ${socket.id} joined room: ${data}`);
     // Get all messages on join
     const allMessages = await messages.findAll(
-      { include: users }, // Joins the user table
-      { where: { chatroom_id: data } } // Specifies the specific chatroom ID
+      { include: users, where: { chatroom_id: data } } // Joins the user table
     );
 
     // console.log(allMessages);
@@ -92,7 +132,7 @@ io.on("connection", async (socket) => {
       author: message.user.first_name,
       chatroomIndex: message.chatroom_id,
     }));
-    // console.log(formattedMessages);
+    console.log(formattedMessages);
     // console.log("data", data);
     socket.emit("load_messages", formattedMessages);
   });
