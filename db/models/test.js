@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
   Test.init(
     {
       users_class_subject_id: DataTypes.INTEGER,
+      name: DataTypes.STRING
     },
     {
       sequelize,

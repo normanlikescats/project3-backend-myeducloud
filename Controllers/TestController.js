@@ -49,9 +49,12 @@ class TestController {
 
   insertOneTest = async (req, res) => {
     const users_class_subject_id = req.params.id;
+    const {name} = req.body
+    console.log(name)
     try {
       const newTest = await this.testModel.create({
         users_class_subject_id: users_class_subject_id,
+        name: name
       });
       return res.json(newTest);
     } catch (err) {
