@@ -1,8 +1,9 @@
 class QuestionnaireController {
-  constructor(questionnaireModel, answersModel, scoresModel) {
+  constructor(questionnaireModel, answersModel, scoresModel, testModel) {
     this.questionnaireModel = questionnaireModel;
     this.answersModel = answersModel;
     this.scoresModel = scoresModel;
+    this.testModel = testModel;
   }
 
   getAllQuestions = async (req, res) => {

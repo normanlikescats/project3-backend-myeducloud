@@ -31,7 +31,8 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       score: DataTypes.INTEGER
-    }, {
+    },
+    {
     sequelize,
     modelName: 'scores',
     underscored: true

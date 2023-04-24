@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.users_class_subjects, { as: "student" });
       // define association here
       this.hasMany(models.scores)
-      this.hasMany(models.users_class_subject)
+      this.hasMany(models.users_class_subjects)
       this.hasMany(models.student_answers)
       this.belongsToMany(models.chatrooms, {
         through: "messages",
