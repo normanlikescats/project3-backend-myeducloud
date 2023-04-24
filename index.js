@@ -31,6 +31,7 @@ const {
   messages,
   tests,
   scores,
+  comments,
 } = db;
 
 const UserController = require("./Controllers/UserController");
@@ -40,6 +41,7 @@ const TestController = require("./Controllers/TestController");
 const MessageController = require("./Controllers/MessageController");
 const ClassSubjectController = require("./Controllers/ClassSubjectController");
 const ScoreController = require("./Controllers/ScoreController");
+const CommentController = require("./Controllers/CommentController");
 
 const UserRouter = require("./Routers/UserRouter");
 const QuestionnaireRouter = require("./Routers/QuestionnaireRouter");
@@ -48,6 +50,7 @@ const TestRouter = require("./Routers/TestRouter");
 const MessageRouter = require("./Routers/MessageRouter");
 const ClassSubjectRouter = require("./Routers/ClassSubjectRouter");
 const ScoreRouter = require("./Routers/ScoreRouter");
+const CommentRouter = require("./Routers/CommentRouter");
 
 const userController = new UserController(users);
 const questionnaireController = new QuestionnaireController(
@@ -69,8 +72,9 @@ const classSubjectController = new ClassSubjectController(
   users
 );
 const scoreController = new ScoreController(scores);
+const commentController = new CommentController(comments);
 
-const userRouter = new UserRouter(userController, express).route();
+const userRouter = new UserRouter(userController, express, checkJwt).route();
 const questionnaireRouter = new QuestionnaireRouter(
   questionnaireController,
   express
@@ -79,6 +83,7 @@ const answerRouter = new AnswerRouter(answerController, express).route();
 const testRouter = new TestRouter(testController, express).route();
 const messageRouter = new MessageRouter(messageController, express).route();
 const scoreRouter = new ScoreRouter(scoreController, express).route();
+const commentRouter = new CommentRouter(commentController, express).route();
 
 const classSubjectRouter = new ClassSubjectRouter(
   classSubjectController,
@@ -92,6 +97,7 @@ app.use("/test", testRouter);
 app.use("/messages", messageRouter);
 app.use("/class", classSubjectRouter);
 app.use("/score", scoreRouter);
+app.use("/comment", commentRouter);
 
 // Socket IO implementation
 const server = http.createServer(app);
