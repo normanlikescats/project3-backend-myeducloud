@@ -1,7 +1,8 @@
 class AnswerController {
-  constructor(studentAnswerModel, scoresModel) {
+  constructor(studentAnswerModel, scoresModel, userModel) {
     this.studentAnswerModel = studentAnswerModel;
     this.scoresModel = scoresModel;
+    this.userModel = userModel
   }
 
   getAllAnswers = async (req, res) => {
@@ -9,6 +10,7 @@ class AnswerController {
     try {
       const allAnswers = await this.studentAnswerModel.findAll(
         {
+          include: this.userModel,
           where: { 
             questionnaire_id: questionnaire_id
           }
@@ -21,12 +23,14 @@ class AnswerController {
   };
 
   getOneAnswer = async (req, res) => {
-    const id = req.params.id 
+    const questionnaire_id = req.params.questionnaireId 
+    const user_id = req.params.userId
     try {
       const oneAnswer = await this.studentAnswerModel.findAll(
         {
           where: {
-            id: id
+            user_id: user_id,
+            questionnaire_id: questionnaire_id
           }
         }
       );
@@ -53,8 +57,9 @@ class AnswerController {
   }
 
   editOneAnswer = async (req, res) => {
-    const id = req.params.id;
-    const { answer } = req.body;
+    const questionnaire_id = req.params.questionnaireId;
+    const user_id = req.params.userId;
+    const {answer} = req.body;
     try {
       await this.studentAnswerModel.update(
         {
@@ -62,11 +67,17 @@ class AnswerController {
         },
         {
           where: {
-            id: id,
+            user_id: user_id,
+            questionnaire_id: questionnaire_id
           },
         }
       );
-      const updatedAnswer = await this.studentAnswerModel.findByPk(id);
+      const updatedAnswer = await this.studentAnswerModel.findAll({
+        where:{
+          user_id: user_id,
+          questionnaire_id: questionnaire_id
+        }
+      });
       return res.json(updatedAnswer);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });

@@ -7,10 +7,10 @@ class QuestionnaireRouter {
     let router = this.express.Router();
 
     router.get("/:testid", this.questionnaireController.getAllQuestions);
-    router.get("/:testid/:id", this.questionnaireController.getOneQuestion);
+    router.get("/question/:id", this.questionnaireController.getOneQuestion);
     router.post("/:testid", this.questionnaireController.insertOneQuestion);
-    router.put("/:testid/:id", this.questionnaireController.editOneQuestion);
-    router.delete("/:testid/:id", this.questionnaireController.deleteOneQuestion);
+    router.put("/edit/:id", this.questionnaireController.editOneQuestion);
+    router.delete("/delete/:id", this.questionnaireController.deleteOneQuestion);
 
     return router;
   };

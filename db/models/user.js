@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       this.hasMany(models.scores)
       this.hasMany(models.users_class_subject)
+      this.hasMany(models.student_answers)
       this.belongsToMany(models.chatrooms, {
         through: "messages",
         foreignKey: "user_id",

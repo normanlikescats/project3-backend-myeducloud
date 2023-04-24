@@ -23,10 +23,7 @@ class QuestionnaireController {
   };
 
   getOneQuestion = async (req, res) => {
-    const test_id = req.params.testid 
     const id = req.params.id
-    console.log(id)
-    console.log(test_id)
     try {
       const oneQuestion = await this.questionnaireModel.findAll(
         {
@@ -65,14 +62,12 @@ class QuestionnaireController {
   // should include a line to remove answers if teacher removes options?
   editOneQuestion = async (req, res) => {
     const id  = req.params.id;
-    const test_id = req.params.testid;
     const { question, option_a, option_b, option_c, option_d, option_e } =
       req.body;
     console.log(req.body)
     try {
       await this.questionnaireModel.update(
         {
-          test_id: test_id,
           question: question,
           option_a: option_a,
           option_b: option_b,
@@ -95,7 +90,6 @@ class QuestionnaireController {
 
   deleteOneQuestion = async (req, res)=>{
     const id = req.params.id;
-    const test_id = req.params.testid;
     let answerIdArr;
     //have to pull the ids to delete them....
     //delete scores first
@@ -145,12 +139,7 @@ class QuestionnaireController {
           id: id,
         }
       })
-      const allQuestions = await this.questionnaireModel.findAll({
-          where: { 
-            test_id: test_id
-          }
-      });
-      return res.json(allQuestions);
+      return res.json({msg: "deleted"});
     }catch(err) {
       return res.status(400).json({ error: true, msg: err });
     }

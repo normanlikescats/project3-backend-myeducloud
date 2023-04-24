@@ -39,10 +39,10 @@ const ScoreRouter = require("./Routers/ScoreRouter");
 
 const userController = new UserController(users);
 const questionnaireController = new QuestionnaireController(questionnaires, student_answers, scores);
-const answerController = new AnswerController(student_answers, scores);
+const answerController = new AnswerController(student_answers, scores, users);
 const testController = new TestController(tests, questionnaires, student_answers, scores);
 const messageController = new MessageController(messages, chatrooms, users);
-const scoreController = new ScoreController(scores);
+const scoreController = new ScoreController(scores, student_answers);
 
 const userRouter = new UserRouter(userController, express).route();
 const questionnaireRouter = new QuestionnaireRouter(questionnaireController, express).route();

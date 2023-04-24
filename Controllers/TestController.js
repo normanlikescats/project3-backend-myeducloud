@@ -6,7 +6,16 @@ class TestController {
     this.scoresModel = scoresModel;
   }
 
-  getAllTests = async (req, res) => {
+  getAllTests = async(req, res) => {
+    try {
+      const allTests = await this.testModel.findAll()
+      res.json(allTests);
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: err });
+    }
+  };
+
+  getAllTestsByClassSubjectId = async (req, res) => {
     const users_class_subject_id = req.params.id;
     try {
       const allTests = await this.testModel.findAll(

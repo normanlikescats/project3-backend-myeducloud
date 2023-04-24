@@ -6,7 +6,8 @@ class TestRouter {
   route = () => {
     let router = this.express.Router();
 
-    router.get("/:id", this.testController.getAllTests);
+    router.get("/all", this.testController.getAllTests);
+    router.get("/:id", this.testController.getAllTestsByClassSubjectId);
     router.get("/:id/:testId", this.testController.getOneTest);
     router.post("/:id", this.testController.insertOneTest);
     router.delete("/:id/:testId", this.testController.deleteOneTest);
