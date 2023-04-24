@@ -7,7 +7,7 @@ class ClassSubjectRouter {
     let router = this.express.Router();
 
     router.get("/", this.controller.getAllClassSubjects);
-    router.get("/myclass", this.controller.getEnrolledClass);
+    router.get("/:userId", this.controller.getEnrolledClass);
     router.post("/", this.controller.joinClass);
 
     return router;

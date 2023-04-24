@@ -37,10 +37,10 @@ class ClassSubjectController {
 
   getEnrolledClass = async (req, res) => {
     try {
-      const { userId } = req.body;
+      const userId = req.params.userId;
 
       const enrolled = await this.usersModel.findOne({
-        where: { id: 6 },
+        where: { id: userId },
         include: this.model,
       });
       res.json(enrolled);
