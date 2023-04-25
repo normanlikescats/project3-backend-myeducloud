@@ -7,10 +7,11 @@ class TestRouter {
   route = () => {
     let router = this.express.Router();
 
-    router.get("/all", this.checkJwt, this.testController.getAllTests);
-    router.get("/:id", this.checkJwt, this.testController.getAllTestsByClassSubjectId);
-    router.get("/:id/:testId", this.checkJwt, this.testController.getOneTest);
-    router.post("/:id", this.checkJwt, this.testController.insertOneTest);
+    router.get("/class", this.testController.getClass)
+    router.get("/all", this.testController.getAllTests);
+    router.get("/:id", this.testController.getAllTestsByClassSubjectId);
+    router.get("/testid/:testId", this.testController.getOneTest);
+    router.post("/add", this.checkJwt, this.testController.insertOneTest);
     router.delete("/:id/:testId", this.checkJwt, this.testController.deleteOneTest);
 
     return router;
