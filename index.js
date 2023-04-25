@@ -63,7 +63,9 @@ const testController = new TestController(
   tests,
   questionnaires,
   student_answers,
-  scores
+  scores,
+  users_class_subjects,
+  class_subjects
 );
 const messageController = new MessageController(messages, chatrooms, users);
 const classSubjectController = new ClassSubjectController(
