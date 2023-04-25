@@ -77,12 +77,13 @@ const commentController = new CommentController(comments);
 const userRouter = new UserRouter(userController, express, checkJwt).route();
 const questionnaireRouter = new QuestionnaireRouter(
   questionnaireController,
-  express
+  express,
+  checkJwt
 ).route();
-const answerRouter = new AnswerRouter(answerController, express).route();
-const testRouter = new TestRouter(testController, express).route();
+const answerRouter = new AnswerRouter(answerController, express, checkJwt).route();
+const testRouter = new TestRouter(testController, express, checkJwt).route();
 const messageRouter = new MessageRouter(messageController, express).route();
-const scoreRouter = new ScoreRouter(scoreController, express).route();
+const scoreRouter = new ScoreRouter(scoreController, express, checkJwt).route();
 const commentRouter = new CommentRouter(commentController, express).route();
 
 const classSubjectRouter = new ClassSubjectRouter(
