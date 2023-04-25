@@ -1,9 +1,20 @@
 class TestController {
-  constructor(testModel, questionnaireModel, answersModel, scoresModel) {
+  constructor(testModel, questionnaireModel, answersModel, scoresModel, userClassModel, classModel) {
     this.testModel = testModel;
     this.questionnaireModel = questionnaireModel;
     this.answersModel = answersModel;
     this.scoresModel = scoresModel;
+    this.userClassModel = userClassModel;
+    this.classModel = classModel;
+  }
+
+  getClass = async (req, res)=>{
+    try{
+      const allClass = await this.classModel.findAll()
+      return res.json(allClass)
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: err });
+    }
   }
 
   getAllTests = async(req, res) => {
@@ -48,15 +59,28 @@ class TestController {
   };
 
   insertOneTest = async (req, res) => {
-    const users_class_subject_id = req.params.id;
-    const {name} = req.body
-    console.log(name)
+    const { name, classIds } = req.body
+    let idArr;
     try {
-      const newTest = await this.testModel.create({
-        users_class_subject_id: users_class_subject_id,
-        name: name
-      });
-      return res.json(newTest);
+      const userClassSubjectIds = await this.userClassModel.findAll(
+        {
+          attributes:['id'],
+          where: {
+            class_subject_id: classIds
+          }
+        }
+      )
+      const stringifiedIds = JSON.stringify(userClassSubjectIds)
+      const parsedIds = JSON.parse(stringifiedIds)
+      idArr = parsedIds.map(id=> id.id)
+      for(let i = 0; i < idArr.length; i ++ ){
+        await this.testModel.create({
+          users_class_subject_id: idArr[i],
+          name: name
+        });
+      }
+      const allTests = await this.testModel.findAll()
+      return res.json(allTests);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }
