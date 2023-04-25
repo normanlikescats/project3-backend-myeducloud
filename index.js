@@ -56,7 +56,7 @@ const userController = new UserController(users);
 const questionnaireController = new QuestionnaireController(
   questionnaires,
   student_answers,
-  scores,
+  scores
 );
 const answerController = new AnswerController(student_answers, scores, users);
 const testController = new TestController(
@@ -161,9 +161,6 @@ io.on("connection", async (socket) => {
     console.log(`connect_error due to ${err.message}`);
   });
 });
-
-app.use("/profile", userRouter);
-app.use("/questionnaire", questionnaireRouter);
 
 server.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);

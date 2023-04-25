@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.addColumn("tests", "name", {type: Sequelize.STRING});
+    await queryInterface.addColumn("tests", "name", { type: Sequelize.STRING });
     await queryInterface.addColumn("users_class_subjects", "created_at", {
       type: Sequelize.DATE,
       allowNull: true,
@@ -15,7 +15,9 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeColumn("tests", "name", {type: Sequelize.STRING});
+    await queryInterface.removeColumn("tests", "name", {
+      type: Sequelize.STRING,
+    });
     await queryInterface.removeColumn("users_class_subjects", "created_at", {
       type: Sequelize.DATE,
       allowNull: true,
